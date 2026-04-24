@@ -2,73 +2,138 @@
 <html>
 <head>
   <title>LOI Fashion</title>
+
+  <!-- Google Font for luxury feel -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+
   <style>
     body {
       margin: 0;
-      font-family: Arial;
       background: #000;
       color: #fff;
-      text-align: center;
+      font-family: 'Inter', sans-serif;
     }
+
     header {
-      padding: 20px;
-      font-size: 24px;
-      letter-spacing: 3px;
-    }
-    .hero {
-      padding: 100px 20px;
-    }
-    .hero h1 {
-      font-size: 48px;
-    }
-    .btn {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 12px 25px;
-      border: 1px solid white;
-      text-decoration: none;
-      color: white;
-    }
-    .products {
-      padding: 50px 20px;
-    }
-    .founders {
-      padding: 40px 20px;
-      border-top: 1px solid #333;
-      margin-top: 40px;
-    }
-    .founders h3 {
-      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      padding: 20px 50px;
+      font-size: 14px;
       letter-spacing: 2px;
     }
-    footer {
+
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+    }
+
+    .hero {
+      height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
       padding: 20px;
-      font-size: 12px;
+    }
+
+    .hero h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 60px;
+      margin: 0;
+    }
+
+    .hero p {
+      margin-top: 10px;
       color: #aaa;
+    }
+
+    .btn {
+      margin-top: 25px;
+      padding: 12px 30px;
+      border: 1px solid #fff;
+      color: #fff;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #fff;
+      color: #000;
+    }
+
+    .section {
+      padding: 100px 60px;
+      text-align: center;
+    }
+
+    .section h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .section p {
+      color: #aaa;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    .founders {
+      padding: 80px 20px;
+      border-top: 1px solid #222;
+      text-align: center;
+    }
+
+    .founders h3 {
+      letter-spacing: 3px;
+      font-size: 14px;
+      color: #888;
+    }
+
+    .founders p {
+      margin: 5px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      font-size: 12px;
+      color: #666;
     }
   </style>
 </head>
 
 <body>
 
-<header>LOI</header>
+<header>
+  <h1>LOI</h1>
+  <div>COLLECTION</div>
+</header>
 
 <div class="hero">
-  <h1>New Collection</h1>
-  <p>Minimal. Premium. Timeless.</p>
-  <a href="#" class="btn">Shop Now</a>
+  <h2>Minimal Luxury</h2>
+  <p>Redefining modern streetwear.</p>
+  <a href="#" class="btn">Explore</a>
 </div>
 
-<div class="products">
-  <h2>Our Collection</h2>
-  <p>T-shirts, Hoodies, Streetwear</p>
+<div class="section">
+  <h3>Our Vision</h3>
+  <p>
+    LOI is built on simplicity, elegance, and bold identity.
+    Designed for those who move different.
+  </p>
 </div>
 
-<!-- Founder Section -->
+<div class="section">
+  <h3>Collection</h3>
+  <p>T-shirts, Hoodies, and timeless essentials.</p>
+</div>
+
 <div class="founders">
   <h3>FOUNDERS</h3>
-  <p>Founder - Sampann Gupta</p>
-  <p>Co-Founder - Kanan Gupta</p>
+  <p>Founder — Sampann Gupta</p>
+  <p>Co-Founder — Kanan Gupta</p>
 </div>
 
 <footer>
