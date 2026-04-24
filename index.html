@@ -3,8 +3,8 @@
 <head>
   <title>LOI Fashion</title>
 
-  <!-- Google Font for luxury feel -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+  <!-- Luxury Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
   <style>
     body {
@@ -17,102 +17,74 @@
     header {
       display: flex;
       justify-content: space-between;
-      padding: 20px 50px;
-      font-size: 14px;
+      padding: 20px 60px;
+      align-items: center;
+    }
+
+    nav a {
+      color: white;
+      margin-right: 25px;
+      text-decoration: none;
+      font-size: 13px;
       letter-spacing: 2px;
     }
-.logo {
-  height: 70px;
-  display: block;
-  margin: auto;
-}
-    header h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 22px;
+
+    .logo {
+      height: 60px;
     }
 
     .hero {
-  height: 100vh;
-  background: url('logo.png.png') center/cover no-repeat;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-    {
       height: 90vh;
+      background: url('logo.png.png') center/cover no-repeat;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
-      text-align: center;
-      padding: 20px;
+      padding-left: 80px;
     }
 
-    .hero h2 {
+    .hero-text h1 {
       font-family: 'Playfair Display', serif;
       font-size: 60px;
       margin: 0;
     }
 
-    .hero p {
-      margin-top: 10px;
+    .hero-text p {
       color: #aaa;
+      margin: 10px 0 20px;
     }
 
     .btn {
-      margin-top: 25px;
-      padding: 12px 30px;
-      border: 1px solid #fff;
-      color: #fff;
+      border: 1px solid gold;
+      padding: 12px 25px;
+      color: gold;
       text-decoration: none;
-      transition: 0.3s;
-    }
-
-    .btn:hover {
-      background: #fff;
-      color: #000;
+      font-size: 13px;
     }
 
     .section {
-      padding: 100px 60px;
+      padding: 80px;
       text-align: center;
     }
 
-    .section h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 32px;
-      margin-bottom: 10px;
+    .products {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
-    .section p {
-      color: #aaa;
-      max-width: 600px;
-      margin: auto;
+    .card {
+      width: 220px;
     }
 
-    .founders {
-      padding: 80px 20px;
-      border-top: 1px solid #222;
-      text-align: center;
-    }
-
-    .founders h3 {
-      letter-spacing: 3px;
-      font-size: 14px;
-      color: #888;
-    }
-
-    .founders p {
-      margin: 5px;
+    .card img {
+      width: 100%;
     }
 
     footer {
+      padding: 40px;
       text-align: center;
-      padding: 30px;
       font-size: 12px;
-      color: #666;
+      color: #777;
     }
   </style>
 </head>
@@ -120,37 +92,54 @@
 <body>
 
 <header>
-  <h1 class="brand">LOI</h1>
-  <div>COLLECTION</div>
+  <nav>
+    <a href="#">HOME</a>
+    <a href="#">COLLECTION</a>
+    <a href="#">ABOUT</a>
+    <a href="#">CONTACT</a>
+  </nav>
+
+  <img src="logo.png.png" class="logo">
+
 </header>
-  
+
 <div class="hero">
-  <h2>Minimal Luxury</h2>
-  <p>Redefining modern streetwear.</p>
-  <a href="#" class="btn">Explore</a>
+  <div class="hero-text">
+    <h1>LOI FASHION</h1>
+    <p>Redefining Streetwear with Elegance</p>
+    <a href="#" class="btn">EXPLORE COLLECTION</a>
+  </div>
 </div>
 
 <div class="section">
-  <h3>Our Vision</h3>
-  <p>
-    LOI is built on simplicity, elegance, and bold identity.
-    Designed for those who move different.
-  </p>
+  <h2>Essential Pieces. Timeless Style.</h2>
+
+  <div class="products">
+    <div class="card">
+      <img src="logo.png.png">
+      <p>LOI EMBLEM TEE</p>
+    </div>
+
+    <div class="card">
+      <img src="logo.png.png">
+      <p>LOI SIGNATURE HOODIE</p>
+    </div>
+
+    <div class="card">
+      <img src="logo.png.png">
+      <p>LOI MINIMAL TEE</p>
+    </div>
+  </div>
 </div>
 
 <div class="section">
-  <h3>Collection</h3>
-  <p>T-shirts, Hoodies, and timeless essentials.</p>
-</div>
-
-<div class="founders">
-  <h3>FOUNDERS</h3>
-  <p>Founder — Sampann Gupta</p>
-  <p>Co-Founder — Kanan Gupta</p>
+  <h2>Founders</h2>
+  <p>Founder - Sampann Gupta</p>
+  <p>Co-Founder - Kanan Gupta</p>
 </div>
 
 <footer>
-  © 2026 LOI Fashion
+  © 2026 LOI Fashion. All Rights Reserved.
 </footer>
 
 </body>
