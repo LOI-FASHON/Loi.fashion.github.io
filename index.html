@@ -119,9 +119,12 @@
       color: #c9a86a;
     }
 
-    .divider {
-      color: #444;
-    }
+   .divider {
+  width: 1px;
+  height: 60px;          /* increase this for bigger line */
+  background: #666;
+  display: inline-block;
+}
 
     /* FOOTER */
     .footer {
@@ -192,6 +195,38 @@
     .footer-box strong {
       color: #fff;
     }
+    /* ===== FOUNDERS UPGRADE ===== */
+
+.founder-line {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  margin-top: 30px;
+}
+
+.founder-box {
+  text-align: center;
+}
+
+.sign {
+  width: 120px;
+  margin-bottom: 10px;
+}
+
+.role {
+  color: #c9a86a;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+/* vertical line */
+.divider {
+  width: 1px;
+  height: 60px;
+  background: #666;
+  display: inline-block;
+}
 
   </style>
 </head>
@@ -257,14 +292,21 @@
   <h2>Founders</h2>
 
   <div class="founder-line">
-    <span><strong>Founder </strong> 
-      <br>
-      Sampann Gupta</span>
-    <span class="divider">|</span>
-    <span><strong>Co-Founder </strong> 
-      <br>
-      Kanan Gupta</span>
+
+  <div class="founder-box">
+    <img src="Fo.png" class="sign">
+    <p class="role">Founder</p>
+    <p>Vansh Aggarwal</p>
   </div>
+
+  <div class="divider"></div>
+
+  <div class="founder-box">
+    <img src="cofo.png" class="sign">
+    <p class="role">Co-Founder</p>
+    <p>Kanan Gupta</p>
+  </div>
+
 </div>
 
 <!-- FOOTER -->
