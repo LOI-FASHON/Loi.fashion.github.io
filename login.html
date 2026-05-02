@@ -1,275 +1,478 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LOI Login</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOI Login</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #000;
-      color: #fff;
-      display: flex;
-      min-height: 100vh;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #000;
+  color: #fff;
+  display: flex;
+  min-height: 100vh;
+}
 
-    .left {
-      flex: 1;
-      background: url('Banner.png') center/cover no-repeat;
-    }
+.left {
+  flex: 1;
+  background: url('Signup.png') center/cover no-repeat;
+}
 
-    .right {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 60px;
-      box-sizing: border-box;
-    }
+.right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px;
+  box-sizing: border-box;
+}
 
-    h1 {
-      font-size: 32px;
-      margin-bottom: 10px;
-      letter-spacing: 2px;
-    }
+h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+}
 
-    .subtitle {
-      color: #c9a86a;
-      margin-bottom: 30px;
-    }
+.subtitle {
+  color: #c9a86a;
+  margin-bottom: 25px;
+}
 
-    input,
-    select {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      background: #000;
-      border: 1px solid #c9a86a;
-      color: #fff;
-      box-sizing: border-box;
-    }
+input, select {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  background: #000;
+  border: 1px solid #c9a86a;
+  color: #fff;
+  box-sizing: border-box;
+}
 
-    button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 15px;
-      background: #c9a86a;
-      color: #000;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-    }
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  background: #c9a86a;
+  color: #000;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
 
-    button:hover {
-      opacity: 0.85;
-    }
+button:hover {
+  opacity: 0.85;
+}
 
-    .switch {
-      margin-top: 20px;
-      font-size: 13px;
-    }
+.google-btn {
+  background: #fff;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
 
-    .switch span {
-      color: #c9a86a;
-      cursor: pointer;
-    }
+.google-icon {
+  width: 18px;
+  height: 18px;
+}
 
-    .hidden {
-      display: none;
-    }
+.switch {
+  margin-top: 18px;
+  font-size: 13px;
+}
 
-    #msg {
-      margin-top: 15px;
-      color: #c9a86a;
-      font-size: 14px;
-    }
+.switch span,
+.forgot {
+  color: #c9a86a;
+  cursor: pointer;
+}
 
-    @media (max-width: 768px) {
-      body {
-        flex-direction: column;
-      }
+.forgot {
+  margin-top: 8px;
+  font-size: 13px;
+  text-align: right;
+}
 
-      .left {
-        height: 250px;
-        flex: none;
-      }
+.hidden {
+  display: none;
+}
 
-      .right {
-        padding: 30px;
-      }
-    }
-  </style>
+.divider-text {
+  text-align: center;
+  color: #777;
+  margin: 15px 0 5px;
+  font-size: 12px;
+}
+
+#msg {
+  margin-top: 15px;
+  color: #c9a86a;
+  font-size: 14px;
+}
+
+#recaptcha-container {
+  margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+  body {
+    flex-direction: column;
+  }
+
+  .left {
+    height: 220px;
+    flex: none;
+  }
+
+  .right {
+    padding: 30px;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <div class="left"></div>
+<div class="left"></div>
 
-  <div class="right">
+<div class="right">
 
-    <h1>WELCOME TO LOI</h1>
-    <p class="subtitle">Luxury Begins Here</p>
+<h1>WELCOME TO LOI</h1>
+<p class="subtitle">Luxury Begins Here</p>
 
-    <!-- LOGIN FORM -->
-    <div id="loginBox">
-      <input type="text" id="email" placeholder="Email">
-      <input type="password" id="password" placeholder="Password">
+<!-- LOGIN FORM -->
+<div id="loginBox">
 
-      <button onclick="login()">Login</button>
+  <input type="text" id="loginId" placeholder="Email or Username">
+  <input type="password" id="password" placeholder="Password">
 
-      <div class="switch">
-        I don’t have an account?
-        <span onclick="showSignup()">Create account for LOI</span>
-      </div>
-    </div>
+  <div class="forgot" onclick="forgotPassword()">Forgot Password?</div>
 
-    <!-- SIGNUP FORM -->
-    <div id="signupBox" class="hidden">
-      <input type="text" id="firstName" placeholder="First Name">
-      <input type="text" id="lastName" placeholder="Last Name">
+  <button onclick="login()">Login</button>
 
-      <input type="email" id="signupEmail" placeholder="Email">
-      <input type="text" id="phone" placeholder="Phone Number">
+  <div class="divider-text">OR</div>
 
-      <input type="password" id="signupPass" placeholder="Password">
-      <input type="password" id="confirmPass" placeholder="Confirm Password">
+  <button class="google-btn" onclick="loginWithGoogle()">
+    <svg class="google-icon" viewBox="0 0 48 48">
+      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+      <path fill="#4285F4" d="M46.5 24.5c0-1.57-.14-3.08-.4-4.5H24v9h12.7c-.55 2.9-2.2 5.36-4.7 7.01l7.27 5.64C43.52 37.73 46.5 31.6 46.5 24.5z"/>
+      <path fill="#FBBC05" d="M10.54 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.98-6.19z"/>
+      <path fill="#34A853" d="M24 48c6.47 0 11.9-2.13 15.87-5.81L32.6 36.55c-2.02 1.35-4.6 2.15-8.6 2.15-6.26 0-11.57-4.22-13.46-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+    </svg>
+    Sign in with Google
+  </button>
 
-      <select id="region">
-        <option value="">Region</option>
-        <option>India</option>
-        <option>UAE</option>
-        <option>UK</option>
-        <option>Other</option>
-      </select>
+  <div class="divider-text">OR LOGIN WITH OTP</div>
 
-      <select id="title">
-        <option value="">Title?</option>
-        <option>Mr</option>
-        <option>Mrs</option>
-        <option>Miss</option>
-        <option>Other</option>
-      </select>
+  <input type="text" id="otpPhone" placeholder="Phone Number e.g. +971501234567">
+  <div id="recaptcha-container"></div>
 
-      <button onclick="signup()">Create Account</button>
+  <button onclick="sendOTP()">Send OTP</button>
 
-      <div class="switch">
-        Already have an account?
-        <span onclick="showLogin()">Login</span>
-      </div>
-    </div>
+  <input type="text" id="otpCode" placeholder="Enter OTP Code">
+  <button onclick="verifyOTP()">Verify OTP</button>
 
-    <p id="msg"></p>
-
+  <div class="switch">
+    I don’t have an account?
+    <span onclick="showSignup()">Create account for LOI</span>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+</div>
 
-    import {
-      getAuth,
-      signInWithEmailAndPassword,
-      createUserWithEmailAndPassword,
-      updateProfile
-    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+<!-- SIGNUP FORM -->
+<div id="signupBox" class="hidden">
 
-    import {
-      getFirestore,
-      doc,
-      setDoc,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+  <input type="text" id="firstName" placeholder="First Name">
+  <input type="text" id="lastName" placeholder="Last Name">
+  <input type="text" id="username" placeholder="Username">
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBEodih-ToCBTVjMmqC7JFmGvR7qDcdM-8",
-      authDomain: "loi7-1ddfc.firebaseapp.com",
-      projectId: "loi7-1ddfc",
-      appId: "1:777558781536:web:ed9252fe4adaa0d93e9d05"
-    };
+  <input type="email" id="signupEmail" placeholder="Email">
+  <input type="text" id="phone" placeholder="Phone Number">
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  <input type="password" id="signupPass" placeholder="Password">
+  <input type="password" id="confirmPass" placeholder="Confirm Password">
 
-    const msg = document.getElementById("msg");
+  <select id="region">
+    <option value="">Region</option>
+    <option>India</option>
+    <option>UAE</option>
+    <option>UK</option>
+    <option>Other</option>
+  </select>
 
-    window.showSignup = function () {
-      msg.innerText = "";
-      document.getElementById("loginBox").classList.add("hidden");
-      document.getElementById("signupBox").classList.remove("hidden");
-    };
+  <select id="title">
+    <option value="">Title</option>
+    <option>Mr</option>
+    <option>Mrs</option>
+    <option>Miss</option>
+    <option>Other</option>
+  </select>
 
-    window.showLogin = function () {
-      msg.innerText = "";
-      document.getElementById("signupBox").classList.add("hidden");
-      document.getElementById("loginBox").classList.remove("hidden");
-    };
+  <button onclick="signup()">Create Account</button>
 
-    window.login = async function () {
-      const email = document.getElementById("email").value.trim();
-      const pass = document.getElementById("password").value;
+  <div class="switch">
+    Already have an account?
+    <span onclick="showLogin()">Login</span>
+  </div>
 
-      if (!email || !pass) {
-        msg.innerText = "Please enter email and password";
+</div>
+
+<p id="msg"></p>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  GoogleAuthProvider,
+  signInWithPopup,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+  sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDocs,
+  query,
+  collection,
+  where,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBEodih-ToCBTVjMmqC7JFmGvR7qDcdM-8",
+  authDomain: "loi7-1ddfc.firebaseapp.com",
+  projectId: "loi7-1ddfc",
+  appId: "1:777558781536:web:ed9252fe4adaa0d93e9d05"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const msg = document.getElementById("msg");
+let confirmationResult;
+
+function cleanError(error) {
+  switch (error.code) {
+    case "auth/user-not-found":
+      return "No account found with this email.";
+    case "auth/wrong-password":
+      return "Incorrect password.";
+    case "auth/invalid-email":
+      return "Please enter a valid email address.";
+    case "auth/email-already-in-use":
+      return "This email is already registered.";
+    case "auth/weak-password":
+      return "Password should be at least 6 characters.";
+    case "auth/popup-closed-by-user":
+      return "Google sign-in was cancelled.";
+    case "auth/popup-blocked":
+      return "Popup blocked. Please allow popups.";
+    case "auth/network-request-failed":
+      return "Network issue. Please check your internet.";
+    case "auth/internal-error":
+      return "Sign-in failed. Please try again.";
+    default:
+      return "Something went wrong. Please try again.";
+  }
+}
+
+window.showSignup = function () {
+  msg.innerText = "";
+  document.getElementById("loginBox").classList.add("hidden");
+  document.getElementById("signupBox").classList.remove("hidden");
+};
+
+window.showLogin = function () {
+  msg.innerText = "";
+  document.getElementById("signupBox").classList.add("hidden");
+  document.getElementById("loginBox").classList.remove("hidden");
+};
+
+window.login = async function () {
+  const loginId = document.getElementById("loginId").value.trim();
+  const pass = document.getElementById("password").value;
+
+  if (!loginId || !pass) {
+    msg.innerText = "Please enter username/email and password.";
+    return;
+  }
+
+  try {
+    let email = loginId;
+
+    if (!loginId.includes("@")) {
+      const q = query(collection(db, "users"), where("username", "==", loginId));
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        msg.innerText = "Username not found.";
         return;
       }
 
-      try {
-        await signInWithEmailAndPassword(auth, email, pass);
-        window.location.href = "dashboard.html";
-      } catch (err) {
-        msg.innerText = err.message;
-      }
-    };
+      email = snap.docs[0].data().email;
+    }
 
-    window.signup = async function () {
-      const firstName = document.getElementById("firstName").value.trim();
-      const lastName = document.getElementById("lastName").value.trim();
-      const email = document.getElementById("signupEmail").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const pass = document.getElementById("signupPass").value;
-      const confirm = document.getElementById("confirmPass").value;
-      const region = document.getElementById("region").value;
-      const title = document.getElementById("title").value;
+    await signInWithEmailAndPassword(auth, email, pass);
+    window.location.href = "dashboard.html";
 
-      if (!firstName || !lastName || !email || !phone || !pass || !confirm || !region || !title) {
-        msg.innerText = "Please fill all fields";
-        return;
-      }
+  } catch (error) {
+    msg.innerText = cleanError(error);
+  }
+};
 
-      if (pass !== confirm) {
-        msg.innerText = "Passwords do not match";
-        return;
-      }
+window.forgotPassword = async function () {
+  const loginId = document.getElementById("loginId").value.trim();
 
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-        const user = userCredential.user;
+  if (!loginId) {
+    msg.innerText = "Please enter your email first.";
+    return;
+  }
 
-        await updateProfile(user, {
-          displayName: `${firstName} ${lastName}`
-        });
+  if (!loginId.includes("@")) {
+    msg.innerText = "Please enter your email, not username, to reset password.";
+    return;
+  }
 
-        await setDoc(doc(db, "users", user.uid), {
-          firstName: firstName,
-          lastName: lastName,
-          fullName: `${firstName} ${lastName}`,
-          email: email,
-          phone: phone,
-          region: region,
-          title: title,
-          createdAt: serverTimestamp()
-        });
+  try {
+    await sendPasswordResetEmail(auth, loginId);
+    msg.innerText = "Password reset link sent to your email.";
+  } catch (error) {
+    msg.innerText = cleanError(error);
+  }
+};
 
-        msg.innerText = "Account created successfully";
-        showLogin();
+window.signup = async function () {
+  const firstName = document.getElementById("firstName").value.trim();
+  const lastName = document.getElementById("lastName").value.trim();
+  const username = document.getElementById("username").value.trim().toLowerCase();
+  const email = document.getElementById("signupEmail").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const pass = document.getElementById("signupPass").value;
+  const confirm = document.getElementById("confirmPass").value;
+  const region = document.getElementById("region").value;
+  const title = document.getElementById("title").value;
 
-      } catch (err) {
-        msg.innerText = err.message;
-      }
-    };
-  </script>
+  if (!firstName || !lastName || !username || !email || !phone || !pass || !confirm || !region || !title) {
+    msg.innerText = "Please fill all fields.";
+    return;
+  }
+
+  if (pass !== confirm) {
+    msg.innerText = "Passwords do not match.";
+    return;
+  }
+
+  try {
+    const usernameCheck = query(collection(db, "users"), where("username", "==", username));
+    const usernameSnap = await getDocs(usernameCheck);
+
+    if (!usernameSnap.empty) {
+      msg.innerText = "Username already taken.";
+      return;
+    }
+
+    const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+    const user = userCredential.user;
+
+    await updateProfile(user, {
+      displayName: `${firstName} ${lastName}`
+    });
+
+    await setDoc(doc(db, "users", user.uid), {
+      firstName,
+      lastName,
+      fullName: `${firstName} ${lastName}`,
+      username,
+      email,
+      phone,
+      region,
+      title,
+      provider: "email",
+      createdAt: serverTimestamp()
+    });
+
+    msg.innerText = "Account created successfully.";
+    showLogin();
+
+  } catch (error) {
+    msg.innerText = cleanError(error);
+  }
+};
+
+window.loginWithGoogle = async function () {
+  try {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    await setDoc(doc(db, "users", user.uid), {
+      fullName: user.displayName || "",
+      email: user.email || "",
+      photoURL: user.photoURL || "",
+      provider: "google",
+      lastLogin: serverTimestamp()
+    }, { merge: true });
+
+    window.location.href = "dashboard.html";
+
+  } catch (error) {
+    msg.innerText = cleanError(error);
+  }
+};
+
+window.sendOTP = async function () {
+  const phoneNumber = document.getElementById("otpPhone").value.trim();
+
+  if (!phoneNumber) {
+    msg.innerText = "Please enter phone number.";
+    return;
+  }
+
+  try {
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+        size: "normal"
+      });
+    }
+
+    confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
+    msg.innerText = "OTP sent successfully.";
+
+  } catch (error) {
+    msg.innerText = cleanError(error);
+  }
+};
+
+window.verifyOTP = async function () {
+  const code = document.getElementById("otpCode").value.trim();
+
+  if (!code) {
+    msg.innerText = "Please enter OTP.";
+    return;
+  }
+
+  try {
+    await confirmationResult.confirm(code);
+    window.location.href = "dashboard.html";
+
+  } catch (error) {
+    msg.innerText = "Invalid OTP.";
+  }
+};
+</script>
 
 </body>
 </html>
