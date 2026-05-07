@@ -17,10 +17,10 @@ body {
 
 .left {
   flex: 1;
+  height: 100vh;
   background: url('Signup.png') center center no-repeat;
   background-size: contain;
-  height: 63vh;
-  padding: 165px;
+  background-color: #000;
 }
 
 .right {
@@ -126,7 +126,7 @@ button:hover {
   }
 
   .left {
-    height: 220px;
+    height: 260px;
     flex: none;
   }
 
@@ -146,10 +146,9 @@ button:hover {
 <h1>WELCOME TO LOI</h1>
 <p class="subtitle">Luxury Begins Here</p>
 
-<!-- LOGIN FORM -->
 <div id="loginBox">
 
-  <input type="text" id="loginId" placeholder="Email or Username">
+  <input type="text" id="loginId" placeholder="Email or Mobile Number">
   <input type="password" id="password" placeholder="Password">
 
   <div class="forgot" onclick="forgotPassword()">Forgot Password?</div>
@@ -170,13 +169,12 @@ button:hover {
 
   <div class="divider-text">OR LOGIN WITH OTP</div>
 
-  <input type="text" id="otpPhone" placeholder="Phone Number e.g. +971501234567">
+  <input type="text" id="otpPhone" placeholder="Mobile Number e.g. +971501234567">
   <div id="recaptcha-container"></div>
 
-  <button onclick="sendOTP()">Send OTP</button>
+  <input type="text" id="otpCode" class="hidden" placeholder="Enter OTP Code">
 
-  <input type="text" id="otpCode" placeholder="Enter OTP Code">
-  <button onclick="verifyOTP()">Verify OTP</button>
+  <button id="otpBtn" onclick="handleOTP()">Send OTP</button>
 
   <div class="switch">
     I don’t have an account?
@@ -185,7 +183,6 @@ button:hover {
 
 </div>
 
-<!-- SIGNUP FORM -->
 <div id="signupBox" class="hidden">
 
   <input type="text" id="firstName" placeholder="First Name">
@@ -244,10 +241,6 @@ import {
   getFirestore,
   doc,
   setDoc,
-  getDocs,
-  query,
-  collection,
-  where,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
@@ -264,13 +257,10 @@ const db = getFirestore(app);
 
 const msg = document.getElementById("msg");
 let confirmationResult;
+let otpSent = false;
 
 function cleanError(error) {
   switch (error.code) {
-    case "auth/user-not-found":
-      return "No account found with this email.";
-    case "auth/wrong-password":
-      return "Incorrect password.";
     case "auth/invalid-email":
       return "Please enter a valid email address.";
     case "auth/email-already-in-use":
@@ -307,28 +297,18 @@ window.login = async function () {
   const pass = document.getElementById("password").value;
 
   if (!loginId || !pass) {
-    msg.innerText = "Please enter username/email and password.";
+    msg.innerText = "Please enter email/mobile and password.";
+    return;
+  }
+
+  if (!loginId.includes("@")) {
+    msg.innerText = "Use OTP login for mobile number.";
     return;
   }
 
   try {
-    let email = loginId;
-
-    if (!loginId.includes("@")) {
-      const q = query(collection(db, "users"), where("username", "==", loginId));
-      const snap = await getDocs(q);
-
-      if (snap.empty) {
-        msg.innerText = "Username not found.";
-        return;
-      }
-
-      email = snap.docs[0].data().email;
-    }
-
-    await signInWithEmailAndPassword(auth, email, pass);
+    await signInWithEmailAndPassword(auth, loginId, pass);
     window.location.href = "dashboard.html";
-
   } catch (error) {
     msg.innerText = cleanError(error);
   }
@@ -337,13 +317,8 @@ window.login = async function () {
 window.forgotPassword = async function () {
   const loginId = document.getElementById("loginId").value.trim();
 
-  if (!loginId) {
+  if (!loginId || !loginId.includes("@")) {
     msg.innerText = "Please enter your email first.";
-    return;
-  }
-
-  if (!loginId.includes("@")) {
-    msg.innerText = "Please enter your email, not username, to reset password.";
     return;
   }
 
@@ -361,17 +336,11 @@ window.signup = async function () {
   const email = document.getElementById("signupEmail").value.trim();
   const phone = document.getElementById("phone").value.trim();
   const pass = document.getElementById("signupPass").value;
-  const confirm = document.getElementById("confirmPass").value;
   const region = document.getElementById("region").value;
   const title = document.getElementById("title").value;
 
-  if (!firstName || !lastName || !email || !phone || !pass || !confirm || !region || !title) {
+  if (!firstName || !lastName || !email || !phone || !pass || !region || !title) {
     msg.innerText = "Please fill all fields.";
-    return;
-  }
-
-  if (pass !== confirm) {
-    msg.innerText = "Passwords do not match.";
     return;
   }
 
@@ -379,18 +348,17 @@ window.signup = async function () {
     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
     const user = userCredential.user;
 
-    // Optional: keep display name (only for Firebase UI)
     await updateProfile(user, {
       displayName: `${firstName} ${lastName}`
     });
 
     await setDoc(doc(db, "users", user.uid), {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      phone: phone,
-      region: region,
-      title: title,
+      firstName,
+      lastName,
+      email,
+      phone,
+      region,
+      title,
       provider: "email",
       createdAt: serverTimestamp()
     });
@@ -410,7 +378,6 @@ window.loginWithGoogle = async function () {
     const user = result.user;
 
     await setDoc(doc(db, "users", user.uid), {
-      fullName: user.displayName || "",
       email: user.email || "",
       photoURL: user.photoURL || "",
       provider: "google",
@@ -418,49 +385,54 @@ window.loginWithGoogle = async function () {
     }, { merge: true });
 
     window.location.href = "dashboard.html";
-
   } catch (error) {
     msg.innerText = cleanError(error);
   }
 };
 
-window.sendOTP = async function () {
+window.handleOTP = async function () {
   const phoneNumber = document.getElementById("otpPhone").value.trim();
+  const codeInput = document.getElementById("otpCode");
+  const otpBtn = document.getElementById("otpBtn");
 
-  if (!phoneNumber) {
-    msg.innerText = "Please enter phone number.";
-    return;
-  }
-
-  try {
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-        size: "normal"
-      });
+  if (!otpSent) {
+    if (!phoneNumber) {
+      msg.innerText = "Please enter mobile number.";
+      return;
     }
 
-    confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
-    msg.innerText = "OTP sent successfully.";
+    try {
+      if (!window.recaptchaVerifier) {
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+          size: "normal"
+        });
+      }
 
-  } catch (error) {
-    msg.innerText = cleanError(error);
-  }
-};
+      confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
 
-window.verifyOTP = async function () {
-  const code = document.getElementById("otpCode").value.trim();
+      otpSent = true;
+      codeInput.classList.remove("hidden");
+      otpBtn.innerText = "Verify OTP";
+      msg.innerText = "OTP sent successfully.";
 
-  if (!code) {
-    msg.innerText = "Please enter OTP.";
-    return;
-  }
+    } catch (error) {
+      msg.innerText = cleanError(error);
+    }
 
-  try {
-    await confirmationResult.confirm(code);
-    window.location.href = "dashboard.html";
+  } else {
+    const code = codeInput.value.trim();
 
-  } catch (error) {
-    msg.innerText = "Invalid OTP.";
+    if (!code) {
+      msg.innerText = "Please enter OTP.";
+      return;
+    }
+
+    try {
+      await confirmationResult.confirm(code);
+      window.location.href = "dashboard.html";
+    } catch (error) {
+      msg.innerText = "Invalid OTP.";
+    }
   }
 };
 </script>
