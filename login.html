@@ -363,10 +363,11 @@ window.signup = async function () {
   const email = document.getElementById("signupEmail").value.trim();
   const phone = document.getElementById("phone").value.trim();
   const pass = document.getElementById("signupPass").value;
+  const confirm = document.getElementById("confirmPass").value;
   const region = document.getElementById("region").value;
   const title = document.getElementById("title").value;
 
-  if (!firstName || !lastName || !username || !email || !phone || !pass || !confirm || !region || !title) {
+  if (!firstName || !lastName || !email || !phone || !pass || !confirm || !region || !title) {
     msg.innerText = "Please fill all fields.";
     return;
   }
@@ -377,30 +378,21 @@ window.signup = async function () {
   }
 
   try {
-    const usernameCheck = query(collection(db, "users"), where("username", "==", username));
-    const usernameSnap = await getDocs(usernameCheck);
-
-    if (!usernameSnap.empty) {
-      msg.innerText = "Username already taken.";
-      return;
-    }
-
     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
     const user = userCredential.user;
 
+    // Optional: keep display name (only for Firebase UI)
     await updateProfile(user, {
       displayName: `${firstName} ${lastName}`
     });
 
     await setDoc(doc(db, "users", user.uid), {
-      firstName,
-      lastName,
-      fullName: `${firstName} ${lastName}`,
-      username,
-      email,
-      phone,
-      region,
-      title,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phone: phone,
+      region: region,
+      title: title,
       provider: "email",
       createdAt: serverTimestamp()
     });
