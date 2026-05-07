@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LOI Login</title>
 
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
 <style>
 body {
   margin: 0;
@@ -26,10 +28,15 @@ body {
 .right {
   flex: 1;
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  padding: 60px;
+  align-items: center;
+  padding: 50px;
   box-sizing: border-box;
+}
+
+.form-box {
+  width: 100%;
+  max-width: 420px;
 }
 
 h1 {
@@ -116,10 +123,6 @@ button:hover {
   font-size: 14px;
 }
 
-#recaptcha-container {
-  margin-top: 10px;
-}
-
 @media (max-width: 768px) {
   body {
     flex-direction: column;
@@ -142,13 +145,14 @@ button:hover {
 <div class="left"></div>
 
 <div class="right">
+<div class="form-box">
 
 <h1>WELCOME TO LOI</h1>
 <p class="subtitle">Luxury Begins Here</p>
 
 <div id="loginBox">
 
-  <input type="text" id="loginId" placeholder="Email or Mobile Number">
+  <input type="email" id="loginEmail" placeholder="Email">
   <input type="password" id="password" placeholder="Password">
 
   <div class="forgot" onclick="forgotPassword()">Forgot Password?</div>
@@ -167,15 +171,6 @@ button:hover {
     Sign in with Google
   </button>
 
-  <div class="divider-text">OR LOGIN WITH OTP</div>
-
-  <input type="text" id="otpPhone" placeholder="Mobile Number e.g. +971501234567">
-  <div id="recaptcha-container"></div>
-
-  <input type="text" id="otpCode" class="hidden" placeholder="Enter OTP Code">
-
-  <button id="otpBtn" onclick="handleOTP()">Send OTP</button>
-
   <div class="switch">
     I don’t have an account?
     <span onclick="showSignup()">Create account for LOI</span>
@@ -187,10 +182,8 @@ button:hover {
 
   <input type="text" id="firstName" placeholder="First Name">
   <input type="text" id="lastName" placeholder="Last Name">
-
   <input type="email" id="signupEmail" placeholder="Email">
-  <input type="text" id="phone" placeholder="Phone Number">
-
+  <input type="text" id="phone" placeholder="Mobile Number">
   <input type="password" id="signupPass" placeholder="Password">
 
   <select id="region">
@@ -209,6 +202,9 @@ button:hover {
     <option>Other</option>
   </select>
 
+  <input type="text" id="otpInput" class="hidden" placeholder="Enter Email OTP">
+
+  <button id="otpBtn" onclick="handleEmailOTP()">Send Email OTP</button>
   <button onclick="signup()">Create Account</button>
 
   <div class="switch">
@@ -221,6 +217,7 @@ button:hover {
 <p id="msg"></p>
 
 </div>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
@@ -232,8 +229,6 @@ import {
   updateProfile,
   GoogleAuthProvider,
   signInWithPopup,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
   sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
@@ -255,9 +250,13 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+emailjs.init("pnOwoazjJUUzjTVP9");
+
 const msg = document.getElementById("msg");
-let confirmationResult;
-let otpSent = false;
+
+let generatedOTP = "";
+let otpEmail = "";
+let emailVerified = false;
 
 function cleanError(error) {
   switch (error.code) {
@@ -271,10 +270,10 @@ function cleanError(error) {
       return "Google sign-in was cancelled.";
     case "auth/popup-blocked":
       return "Popup blocked. Please allow popups.";
+    case "auth/unauthorized-domain":
+      return "This domain is not authorized for Google login.";
     case "auth/network-request-failed":
       return "Network issue. Please check your internet.";
-    case "auth/internal-error":
-      return "Sign-in failed. Please try again.";
     default:
       return "Something went wrong. Please try again.";
   }
@@ -293,21 +292,16 @@ window.showLogin = function () {
 };
 
 window.login = async function () {
-  const loginId = document.getElementById("loginId").value.trim();
+  const email = document.getElementById("loginEmail").value.trim();
   const pass = document.getElementById("password").value;
 
-  if (!loginId || !pass) {
-    msg.innerText = "Please enter email/mobile and password.";
-    return;
-  }
-
-  if (!loginId.includes("@")) {
-    msg.innerText = "Use OTP login for mobile number.";
+  if (!email || !pass) {
+    msg.innerText = "Please enter email and password.";
     return;
   }
 
   try {
-    await signInWithEmailAndPassword(auth, loginId, pass);
+    await signInWithEmailAndPassword(auth, email, pass);
     window.location.href = "dashboard.html";
   } catch (error) {
     msg.innerText = cleanError(error);
@@ -315,18 +309,66 @@ window.login = async function () {
 };
 
 window.forgotPassword = async function () {
-  const loginId = document.getElementById("loginId").value.trim();
+  const email = document.getElementById("loginEmail").value.trim();
 
-  if (!loginId || !loginId.includes("@")) {
+  if (!email) {
     msg.innerText = "Please enter your email first.";
     return;
   }
 
   try {
-    await sendPasswordResetEmail(auth, loginId);
+    await sendPasswordResetEmail(auth, email);
     msg.innerText = "Password reset link sent to your email.";
   } catch (error) {
     msg.innerText = cleanError(error);
+  }
+};
+
+window.handleEmailOTP = function () {
+  const email = document.getElementById("signupEmail").value.trim();
+  const otpInput = document.getElementById("otpInput");
+  const otpBtn = document.getElementById("otpBtn");
+
+  if (!email) {
+    msg.innerText = "Please enter email first.";
+    return;
+  }
+
+  if (!generatedOTP || otpEmail !== email) {
+    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+    otpEmail = email;
+    emailVerified = false;
+
+    emailjs.send("service_6ljix9g", "template_z2p652m", {
+      to_email: email,
+      otp: generatedOTP
+    })
+    .then(function () {
+      msg.innerText = "OTP sent to your email.";
+      otpInput.classList.remove("hidden");
+      otpBtn.innerText = "Verify Email OTP";
+    })
+    .catch(function () {
+      msg.innerText = "Failed to send OTP. Please try again.";
+    });
+
+    return;
+  }
+
+  const enteredOTP = otpInput.value.trim();
+
+  if (!enteredOTP) {
+    msg.innerText = "Please enter OTP.";
+    return;
+  }
+
+  if (enteredOTP === generatedOTP) {
+    emailVerified = true;
+    otpBtn.innerText = "Email Verified";
+    otpBtn.disabled = true;
+    msg.innerText = "Email verified successfully.";
+  } else {
+    msg.innerText = "Invalid OTP.";
   }
 };
 
@@ -344,27 +386,32 @@ window.signup = async function () {
     return;
   }
 
+  if (!emailVerified || otpEmail !== email) {
+    msg.innerText = "Please verify email OTP first.";
+    return;
+  }
+
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
     const user = userCredential.user;
 
     await updateProfile(user, {
-      displayName: `${firstName} ${lastName}`
+      displayName: firstName + " " + lastName
     });
 
     await setDoc(doc(db, "users", user.uid), {
-      firstName,
-      lastName,
-      email,
-      phone,
-      region,
-      title,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phone: phone,
+      region: region,
+      title: title,
       provider: "email",
       createdAt: serverTimestamp()
     });
 
     msg.innerText = "Account created successfully.";
-    showLogin();
+    window.location.href = "dashboard.html";
 
   } catch (error) {
     msg.innerText = cleanError(error);
@@ -377,62 +424,21 @@ window.loginWithGoogle = async function () {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    await setDoc(doc(db, "users", user.uid), {
-      email: user.email || "",
-      photoURL: user.photoURL || "",
-      provider: "google",
-      lastLogin: serverTimestamp()
-    }, { merge: true });
+    try {
+      await setDoc(doc(db, "users", user.uid), {
+        email: user.email || "",
+        photoURL: user.photoURL || "",
+        provider: "google",
+        lastLogin: serverTimestamp()
+      }, { merge: true });
+    } catch (dbError) {
+      console.log("Firestore save error:", dbError);
+    }
 
     window.location.href = "dashboard.html";
+
   } catch (error) {
     msg.innerText = cleanError(error);
-  }
-};
-
-window.handleOTP = async function () {
-  const phoneNumber = document.getElementById("otpPhone").value.trim();
-  const codeInput = document.getElementById("otpCode");
-  const otpBtn = document.getElementById("otpBtn");
-
-  if (!otpSent) {
-    if (!phoneNumber) {
-      msg.innerText = "Please enter mobile number.";
-      return;
-    }
-
-    try {
-      if (!window.recaptchaVerifier) {
-        window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-          size: "normal"
-        });
-      }
-
-      confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
-
-      otpSent = true;
-      codeInput.classList.remove("hidden");
-      otpBtn.innerText = "Verify OTP";
-      msg.innerText = "OTP sent successfully.";
-
-    } catch (error) {
-      msg.innerText = cleanError(error);
-    }
-
-  } else {
-    const code = codeInput.value.trim();
-
-    if (!code) {
-      msg.innerText = "Please enter OTP.";
-      return;
-    }
-
-    try {
-      await confirmationResult.confirm(code);
-      window.location.href = "dashboard.html";
-    } catch (error) {
-      msg.innerText = "Invalid OTP.";
-    }
   }
 };
 </script>
